@@ -8,11 +8,13 @@ import sys
 __author__ = 'jaredchu'
 
 import os
+from os.path import expanduser
 import random
 import help
 
 old_date_format = '%d-%m-%Y'
 date_format = '%Y-%m-%d'
+
 
 def random_file(dir_path):
     if (os.path.isdir(dir_path)):
@@ -52,6 +54,7 @@ def is_archive_dir(path):
 
     return result
 
+
 def is_old_archive_dir(path):
     result = False
     dir_name = path
@@ -79,6 +82,7 @@ def with_slash(string):
         return string
     else:
         return string + '/'
+
 
 # mem_var
 dir_count = 0
@@ -149,8 +153,9 @@ def test(working_dir_path):
     random_dir(working_dir_path)
     random_file(working_dir_path)
 
+
 # Upgrade folder name format
-#todo: this function is not completed
+# todo: this function is not completed
 def upgrade(working_dir_path):
     return
     # childs = os.listdir(working_dir_path)
@@ -159,6 +164,7 @@ def upgrade(working_dir_path):
     #     if is_old_archive_dir(child_path):
     #         new_child_path = working_dir_path + datetime.datetime.now().strftime(date_format)
     #         print("Rename " + child_path + " to " + with_slash(new_child_path))
+
 
 # Main progarm
 def main(working_dir_path):
@@ -201,7 +207,6 @@ def main(working_dir_path):
         if (os.path.isfile(src)):
             file_count += 1
 
-
     for junk in junk_files:
         if (file_only == True):
             if (os.path.isfile(junk)):
@@ -225,16 +230,37 @@ elif (is_test):
     test(with_slash(os.environ['PWD']))
 elif (is_help):
     help.get_help()
-elif(is_upgrade_folder_name_format):
+elif (is_upgrade_folder_name_format):
     upgrade(with_slash(os.environ['PWD']))
 else:
-    if (set_target == True):
-        wdp = ''
-        if ('/' == target_dir[0] and os.path.isdir(target_dir)):
-            wpd = target_dir
+    # confirm if wpd is not user's desktop
+    confirmed = True
+
+    desktop_dir = expanduser("~") + '/Desktop'
+    if (os.environ['PWD'] != desktop_dir):
+        response = ''
+        while (True):
+            response = raw_input("You are perform cleaning a directory out side of Desktop, are you sure [y/n]: ").lower()
+            if (response == 'y' or response == 'n'):
+                break
+            else:
+                print "Please enter y or n"
+
+        if (response == 'y'):
+            confirmed = True
         else:
-            wpd = with_slash(os.environ['PWD']) + target_dir
-        main(wpd)
+            confirmed = False
+
+    if (confirmed):
+        if (set_target == True):
+            wdp = ''
+            if ('/' == target_dir[0] and os.path.isdir(target_dir)):
+                wpd = target_dir
+            else:
+                wpd = with_slash(os.environ['PWD']) + target_dir
+            main(wpd)
+        else:
+            main(with_slash(os.environ['PWD']))
+        pass
     else:
-        main(with_slash(os.environ['PWD']))
-    pass
+        print "Canceled"
