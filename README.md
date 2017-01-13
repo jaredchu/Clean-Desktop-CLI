@@ -4,7 +4,7 @@ CLI script help you clean your desktop or your specific folder.
 ## Installation
 `git clone https://github.com/jaredchu/Clean-Desktop-CLI`
 ## Usage
-`python run.py` //clean your current location, move all files and folder to a folder named **your current date**
+`python run.py` //clean your current location, move all files and folder to a folder with format **yyyy-mm-dd**
 
 `python run.py -f` //file only
 
