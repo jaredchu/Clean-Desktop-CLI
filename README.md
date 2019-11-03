@@ -1,6 +1,9 @@
 # Clean Desktop CLI
 CLI script help you clean your desktop or your specific folder.
 
+![Sample](https://i.imgur.com/PM6SST1.gif)
+
+
 ## Installation
 `git clone https://github.com/jaredchu/Clean-Desktop-CLI`
 ## Usage
