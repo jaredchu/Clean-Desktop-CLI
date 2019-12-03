@@ -179,11 +179,15 @@ def main(working_dir_path):
     new_archive_dir_name = datetime.datetime.now().strftime(date_format)
     new_archive_dir_path = working_dir_path + new_archive_dir_name
 
-    if not os.path.isdir(new_archive_dir_path):
-        print("Create new directory " + new_archive_dir_path)
-        os.mkdir(new_archive_dir_path)
+    if not junk_files:
+        print("Working directory is empty " + working_dir_path)
+        return
     else:
-        print("Directory " + new_archive_dir_path + " is exits")
+        if not os.path.isdir(new_archive_dir_path):
+            print("Create new directory " + new_archive_dir_path)
+            os.mkdir(new_archive_dir_path)
+        else:
+            print("Directory " + new_archive_dir_path + " is exits")
 
     def move_junk(src):
         global dir_count
