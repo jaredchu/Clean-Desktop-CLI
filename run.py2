@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 from time import strptime
 import datetime
@@ -39,8 +39,8 @@ def is_archive_dir(path):
     dir_name = path
     try:
         dir_name = path.split('/')[-1]
-    except Exception as e:
-        print((e.__str__()))
+    except Exception, e:
+        print(e.__str__())
 
     # remove conflict with old version
     result = is_old_archive_dir(path)
@@ -48,7 +48,7 @@ def is_archive_dir(path):
     try:
         strptime(dir_name, date_format)
         result = True
-    except Exception as e:
+    except Exception, e:
         # print('This dir is not archive dir' + e.__str__())
         pass
 
@@ -60,13 +60,13 @@ def is_old_archive_dir(path):
     dir_name = path
     try:
         dir_name = path.split('/')[-1]
-    except Exception as e:
-        print((e.__str__()))
+    except Exception, e:
+        print(e.__str__())
 
     try:
         strptime(dir_name, old_date_format)
         result = True
-    except Exception as e:
+    except Exception, e:
         # print('This dir is not archive dir' + e.__str__())
         pass
 
@@ -129,7 +129,7 @@ for index, arg in enumerate(sys.argv):
         set_target = True
         try:
             target_dir = sys.argv[index + 1]
-        except Exception as e:
+        except Exception, e:
             pass
 
 filter_by_text = False
@@ -139,7 +139,7 @@ for index, arg in enumerate(sys.argv):
         filter_by_text = True
         try:
             filter_text = sys.argv[index + 1]
-        except Exception as e:
+        except Exception, e:
             pass
 
 is_upgrade_folder_name_format = False
@@ -180,14 +180,14 @@ def main(working_dir_path):
     new_archive_dir_path = working_dir_path + new_archive_dir_name
 
     if not junk_files:
-        print(("Working directory is empty " + working_dir_path))
+        print("Working directory is empty " + working_dir_path)
         return
     else:
         if not os.path.isdir(new_archive_dir_path):
-            print(("Create new directory " + new_archive_dir_path))
+            print("Create new directory " + new_archive_dir_path)
             os.mkdir(new_archive_dir_path)
         else:
-            print(("Directory " + new_archive_dir_path + " is exits"))
+            print("Directory " + new_archive_dir_path + " is exits")
 
     def move_junk(src):
         global dir_count
@@ -204,7 +204,7 @@ def main(working_dir_path):
 
         if (do_move):
             shutil.move(src, new_archive_dir_path)
-            print(("Move " + src + " to " + with_slash(new_archive_dir_path)))
+            print("Move " + src + " to " + with_slash(new_archive_dir_path))
 
         if (os.path.isdir(src)):
             dir_count += 1
@@ -229,7 +229,7 @@ def main(working_dir_path):
 
 
 if (show_version):
-    print(("Current version is " + version.__str__()))
+    print("Current version is " + version.__str__())
 elif (is_test):
     test(with_slash(os.environ['PWD']))
 elif (is_help):
@@ -244,11 +244,11 @@ else:
     if (os.environ['PWD'] != desktop_dir):
         response = ''
         while (True):
-            response = input("You are perform cleaning a directory out side of Desktop, are you sure [y/n]: ").lower()
+            response = raw_input("You are perform cleaning a directory out side of Desktop, are you sure [y/n]: ").lower()
             if (response == 'y' or response == 'n'):
                 break
             else:
-                print("Please enter y or n")
+                print "Please enter y or n"
 
         if (response == 'y'):
             confirmed = True
@@ -267,4 +267,4 @@ else:
             main(with_slash(os.environ['PWD']))
         pass
     else:
-        print("Canceled")
+        print "Canceled"
