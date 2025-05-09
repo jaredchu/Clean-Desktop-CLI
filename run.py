@@ -89,7 +89,7 @@ dir_count = 0
 file_count = 0
 
 # program var
-version = 1.6
+version = 1.7
 
 # ARGS
 file_only = False
@@ -188,6 +188,12 @@ def main(working_dir_path):
             os.mkdir(new_archive_dir_path)
         else:
             print(("Directory " + new_archive_dir_path + " is exits"))
+            # Add timestamp to make unique directory name
+            timestamp = datetime.datetime.now().strftime("%H%M%S")
+            new_archive_dir_name = f"{new_archive_dir_name}_{timestamp}"
+            new_archive_dir_path = working_dir_path + new_archive_dir_name
+            print(f"Creating new directory {new_archive_dir_path}")
+            os.mkdir(new_archive_dir_path)
 
     def move_junk(src):
         global dir_count
@@ -237,14 +243,15 @@ elif (is_help):
 elif (is_upgrade_folder_name_format):
     upgrade(with_slash(os.environ['PWD']))
 else:
-    # confirm if wpd is not user's desktop
+    # confirm if wpd is not user's desktop or temp
     confirmed = True
 
     desktop_dir = expanduser("~") + '/Desktop'
-    if (os.environ['PWD'] != desktop_dir):
+    temp_dir = expanduser("~") + '/Temp'
+    if (os.environ['PWD'] != desktop_dir and os.environ['PWD'] != temp_dir):
         response = ''
         while (True):
-            response = input("You are perform cleaning a directory out side of Desktop, are you sure [y/n]: ").lower()
+            response = input("You are perform cleaning a directory outside of Desktop or Temp, are you sure [y/n]: ").lower()
             if (response == 'y' or response == 'n'):
                 break
             else:
