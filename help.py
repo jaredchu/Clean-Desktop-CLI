@@ -9,6 +9,7 @@ helpStr = [
     '-d : Directory only',
     '--test : Create some file and folder for test',
     '--version : Show current version of program',
+    '--archive : Move date-formatted folders into Archive folder',
     '--contain [text] : Filter file and folder by [text]',
     '--target [target_dir] : Target folder need to clean by [target_dir]',
     '--help : Show help',
