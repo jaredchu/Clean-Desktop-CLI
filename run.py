@@ -122,6 +122,11 @@ for arg in sys.argv:
     if (arg == '--help'):
         is_help = True
 
+is_archive = False
+for arg in sys.argv:
+    if (arg == '--archive'):
+        is_archive = True
+
 set_target = False
 target_dir = ''
 for index, arg in enumerate(sys.argv):
@@ -175,7 +180,8 @@ def main(working_dir_path):
     childs = os.listdir(working_dir_path)
     childs_path = [working_dir_path + x for x in childs]
 
-    junk_files = [path for path in childs_path if not is_archive_dir(path)]
+    # Filter out Archive folder and non-date folders
+    junk_files = [path for path in childs_path if not is_archive_dir(path) and get_name(path) != "Archive"]
     new_archive_dir_name = datetime.datetime.now().strftime(date_format)
     new_archive_dir_path = working_dir_path + new_archive_dir_name
 
@@ -234,6 +240,40 @@ def main(working_dir_path):
     print("")
 
 
+def archive_date_folders(working_dir_path):
+    print("")
+    print("-- Archiving date folders started --")
+    print("")
+
+    # Create Archive folder if it doesn't exist
+    archive_dir = working_dir_path + "Archive"
+    if not os.path.isdir(archive_dir):
+        print(f"Creating Archive directory at {archive_dir}")
+        os.mkdir(archive_dir)
+
+    # Get all items in the working directory
+    childs = os.listdir(working_dir_path)
+    childs_path = [working_dir_path + x for x in childs]
+
+    # Filter only date-formatted folders
+    date_folders = [path for path in childs_path if is_archive_dir(path) and os.path.isdir(path)]
+    
+    if not date_folders:
+        print("No date-formatted folders found to archive")
+        return
+
+    # Move each date folder to Archive
+    for folder in date_folders:
+        folder_name = get_name(folder)
+        target_path = archive_dir + "/" + folder_name
+        print(f"Moving {folder} to {target_path}")
+        shutil.move(folder, target_path)
+
+    print("")
+    print("-- Date folders archived successfully! --")
+    print("")
+
+
 if (show_version):
     print(("Current version is " + version.__str__()))
 elif (is_test):
@@ -242,6 +282,38 @@ elif (is_help):
     help.get_help()
 elif (is_upgrade_folder_name_format):
     upgrade(with_slash(os.environ['PWD']))
+elif (is_archive):
+    # confirm if wpd is not user's desktop or temp
+    confirmed = True
+
+    desktop_dir = expanduser("~") + '/Desktop'
+    temp_dir = expanduser("~") + '/Temp'
+    if (os.environ['PWD'] != desktop_dir and os.environ['PWD'] != temp_dir):
+        response = ''
+        while (True):
+            response = input("You are performing archiving in a directory outside of Desktop or Temp, are you sure [y/n]: ").lower()
+            if (response == 'y' or response == 'n'):
+                break
+            else:
+                print("Please enter y or n")
+
+        if (response == 'y'):
+            confirmed = True
+        else:
+            confirmed = False
+
+    if (confirmed):
+        if (set_target == True):
+            wdp = ''
+            if ('/' == target_dir[0] and os.path.isdir(target_dir)):
+                wpd = target_dir
+            else:
+                wpd = with_slash(os.environ['PWD']) + target_dir
+            archive_date_folders(wpd)
+        else:
+            archive_date_folders(with_slash(os.environ['PWD']))
+    else:
+        print("Canceled")
 else:
     # confirm if wpd is not user's desktop or temp
     confirmed = True
